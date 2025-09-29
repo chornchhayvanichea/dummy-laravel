@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\CardController;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,4 +17,12 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
+});
+
+Route::middleware('auth::sanctum')->prefix('cards')->group(function () {
+    Route::get('/', [CardController::class,'index']);
+    Route::get('/{card}', [CardController::class,'show']);
+    Route::get('/', [CardController::class,'store']);
+    Route::get('/{card}', [CardController::class,'update']);
+    Route::get('/{card}', [CardController::class,'destroy']);
 });
