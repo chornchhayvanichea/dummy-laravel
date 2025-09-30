@@ -8,24 +8,15 @@ use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function signup(Request $request)
     {
         $val = $request->validate([
+            'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users',
             'password' => 'required|min:6|confirmed'
         ]);
         $user = User::create([
+            'name' => $val['name'],
             'email' => $val['email'],
             'password' => Hash::make($val['password'])
         ]);
@@ -49,7 +40,8 @@ class AuthController extends Controller
                 'message' => 'invalid credentails'
             ]);
         }
-        $token = $user->createToken('auth-tokken')->plainTextToken;
+        //this is for expiration
+        $token = $user->createToken('auth-token', ['*'], now()->addHours(1));
         return response()->json([
             'access_token' => $token,
             'token_type' => 'Bearer',
@@ -58,9 +50,9 @@ class AuthController extends Controller
         ]);
     }
 
-    public function destroy(Request $request)
+    public function logout(Request $request)
     {
-        $request->user()->currenAccessToken()->delete();
+        $request->user()->currentAccessToken()->delete();
         return response()->json([
             'message' => 'logout successfully'
         ], 200);

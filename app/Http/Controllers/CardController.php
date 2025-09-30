@@ -44,7 +44,7 @@ class CardController extends Controller
             'title' => $validated['title'],
             'description' => $validated['description'],
             'image' => $validated['image'] ?? null,
-            'user_id' => auth()->id
+            'user_id' => auth()->id()
         ]);
         return response()->json([
             'card' => $card
@@ -76,7 +76,7 @@ class CardController extends Controller
     public function update(Request $request, Card $card)
     {
         //check ownership
-        if ($card->usre_id !== auth()->id()) {
+        if ($card->user_id !== auth()->id()) {
             return response()->json([
                 'message' => 'unauthorized'
             ], 403);
